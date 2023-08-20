@@ -21,22 +21,22 @@ class Generator(nn.Module):
             nn.BatchNorm2d(hidden_dim * 2),
             nn.ReLU(),
 
-            nn.Conv2d(hidden_dim, hidden_dim * 4, kernel_size=4, stride=2, padding=1, bias=False),
+            nn.Conv2d(hidden_dim * 2, hidden_dim * 4, kernel_size=4, stride=2, padding=1, bias=False),
             nn.BatchNorm2d(hidden_dim * 4),
             nn.ReLU(),
 
-            nn.Conv2d(hidden_dim, hidden_dim * 8, kernel_size=4, stride=2, padding=1, bias=False),
+            nn.Conv2d(hidden_dim * 4, hidden_dim * 8, kernel_size=4, stride=2, padding=1, bias=False),
             nn.BatchNorm2d(hidden_dim * 8),
             nn.ReLU(),
 
         )
 
         self.decoder = nn.Sequential(
-            nn.ConvTranspose2d(hidden_dim * 8, hidden_dim * 4, kernel_size=4, stride=1, padding=1, bias=False),
+            nn.ConvTranspose2d(hidden_dim * 8, hidden_dim * 4, kernel_size=4, stride=1, padding=0, bias=False),
             nn.BatchNorm2d(hidden_dim * 4),
             nn.ReLU(True),
 
-            nn.ConvTranspose2d(hidden_dim * 4, hidden_dim * 2, kernel_size=4, stride=2, padding=1, bias=False),
+            nn.ConvTranspose2d(hidden_dim * 4, hidden_dim * 2, kernel_size=4, stride=2, padding=0, bias=False),
             nn.BatchNorm2d(hidden_dim * 2),
             nn.ReLU(True),
 
@@ -59,7 +59,7 @@ class Generator(nn.Module):
 # Exactly the same as the generator except it takes in the celeb images and generates cartoon images.
 class InverseGenerator(nn.Module):
     def __init__(self, input_channels, hidden_dim):
-        super(Generator, self).__init__()
+        super(InverseGenerator, self).__init__()
 
         """
         Encoder is responsible for taking in the cartoon image and down-sampling while retaining the core features 
@@ -77,21 +77,21 @@ class InverseGenerator(nn.Module):
             nn.BatchNorm2d(hidden_dim * 2),
             nn.ReLU(),
 
-            nn.Conv2d(hidden_dim, hidden_dim * 4, kernel_size=4, stride=2, padding=1, bias=False),
+            nn.Conv2d(hidden_dim * 2, hidden_dim * 4, kernel_size=4, stride=2, padding=1, bias=False),
             nn.BatchNorm2d(hidden_dim * 4),
             nn.ReLU(),
 
-            nn.Conv2d(hidden_dim, hidden_dim * 8, kernel_size=4, stride=2, padding=1, bias=False),
+            nn.Conv2d(hidden_dim * 4, hidden_dim * 8, kernel_size=4, stride=2, padding=1, bias=False),
             nn.BatchNorm2d(hidden_dim * 8),
             nn.ReLU(),
         )
 
         self.decoder = nn.Sequential(
-            nn.ConvTranspose2d(hidden_dim * 8, hidden_dim * 4, kernel_size=4, stride=1, padding=1, bias=False),
+            nn.ConvTranspose2d(hidden_dim * 8, hidden_dim * 4, kernel_size=4, stride=1, padding=0, bias=False),
             nn.BatchNorm2d(hidden_dim * 4),
             nn.ReLU(True),
 
-            nn.ConvTranspose2d(hidden_dim * 4, hidden_dim * 2, kernel_size=4, stride=2, padding=1, bias=False),
+            nn.ConvTranspose2d(hidden_dim * 4, hidden_dim * 2, kernel_size=4, stride=2, padding=0, bias=False),
             nn.BatchNorm2d(hidden_dim * 2),
             nn.ReLU(True),
 

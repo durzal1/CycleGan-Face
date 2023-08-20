@@ -62,8 +62,8 @@ for epoch in range(NUM_EPOCHS):
 
         batch_size = cartoon_images.size(0)
 
-        real_labels = torch.ones(batch_size, 1)
-        fake_labels = torch.zeros(batch_size, 1)
+        real_labels = torch.ones(batch_size, 1).to(DEVICE)
+        fake_labels = torch.zeros(batch_size, 1).to(DEVICE)
 
         # Training the real discriminator (Feed in real)
         optimizer_D_real.zero_grad()
@@ -114,8 +114,8 @@ for epoch in range(NUM_EPOCHS):
         optimizer_G.step()
 
         # Save images occasionally
-        if epoch % 1 == 0 and batch_idx == 0:
-            SavePNG(generator(cartoon_images), inverse_generator(real_images), epoch)
+        # if epoch % 1 == 0 and batch_idx == 0:
+            # SavePNG(generator(cartoon_images), inverse_generator(real_images), epoch)
 
         discriminator_loss += real_discriminator_loss + cartoon_discriminator_loss
         generator_loss += total_gen_loss
