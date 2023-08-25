@@ -15,11 +15,11 @@ DEVICE = 'cuda'
 
 # Hyper Parameters
 BATCH_SIZE = 64
-NUM_EPOCHS = 100
+NUM_EPOCHS = 1000
 LEARNING_RATE1 = 0.0001
 LEARNING_RATE2 = 0.002
 LEARNING_RATE3 = 0.002
-HIDDEN_SIZE = 64
+HIDDEN_SIZE = 120
 
 # Custom Dataset
 dataset = CustomDataset(HEIGHT, WIDTH, cartoon_path, celeb_path)
@@ -33,8 +33,11 @@ generator = Generator(3, HIDDEN_SIZE).to(DEVICE)
 inverse_generator = InverseGenerator(3, HIDDEN_SIZE).to(DEVICE)
 
 # Load the generator and discriminator models
-# generator.load_state_dict(torch.load('generator.pth'))
-# discriminator.load_state_dict(torch.load('discriminator.pth'))
+generator.load_state_dict(torch.load('generator.pth'))
+inverse_generator.load_state_dict(torch.load('inverse_generator.pth'))
+discriminator_real.load_state_dict(torch.load('discriminator_real.pth'))
+discriminator_cartoon.load_state_dict(torch.load('discriminator_cartoon.pth'))
+
 
 # Initialize optimizers
 optimizer_D_cartoon = torch.optim.Adam(discriminator_cartoon.parameters(), lr=LEARNING_RATE1)
@@ -55,6 +58,8 @@ for epoch in range(NUM_EPOCHS):
 
     discriminator_loss = 0
     generator_loss = 0
+
+    epoch += 152
 
     for batch_idx, (cartoon_images, real_images) in enumerate(loop):
         cartoon_images = cartoon_images.to(DEVICE)
@@ -114,8 +119,8 @@ for epoch in range(NUM_EPOCHS):
         optimizer_G.step()
 
         # Save images occasionally
-        # if epoch % 1 == 0 and batch_idx == 0:
-            # SavePNG(generator(cartoon_images), inverse_generator(real_images), epoch)
+        if epoch % 1 == 0 and batch_idx % 500 == 0  :
+            SavePNG(cartoon_images, generator(cartoon_images), inverse_generator(real_images), epoch)
 
         discriminator_loss += real_discriminator_loss + cartoon_discriminator_loss
         generator_loss += total_gen_loss
@@ -127,7 +132,7 @@ for epoch in range(NUM_EPOCHS):
           f", Generator Loss: {average_generator_loss:.4f}")
 
     # Occasionally save the model
-    if epoch % 3 == 0:
+    if epoch % 1 == 0:
         torch.save(generator.state_dict(), 'generator.pth')
         torch.save(inverse_generator.state_dict(), 'inverse_generator.pth')
         torch.save(discriminator_real.state_dict(), 'discriminator_real.pth')

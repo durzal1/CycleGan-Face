@@ -8,9 +8,9 @@ class Generator(nn.Module):
         """
         Encoder is responsible for taking in the cartoon image and down-sampling while retaining the core features 
         so it can later be reconstructed in the decoder. This is down using convolutional layers. 
-        
+
         The Decoder takes the down-sampled features and up-samples it to using transpose layers. 
-        
+
         """
         self.encoder = nn.Sequential(
             nn.Conv2d(input_channels, hidden_dim, kernel_size=4, stride=2, padding=1, bias=False),
@@ -109,6 +109,7 @@ class InverseGenerator(nn.Module):
         encoded = self.encoder(x)
         decoded = self.decoder(encoded)
         return decoded
+
 
 class Discriminator(nn.Module):
     def __init__(self, image_channels, hidden_dim):

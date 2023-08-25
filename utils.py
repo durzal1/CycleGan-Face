@@ -6,20 +6,30 @@ def count_parameters(model):
     return sum(p.numel() for p in model.parameters() if p.requires_grad)
 
 
-def SavePNG(fake_real, fake_cartoon, epoch):
+def SavePNG(cartoon, fake_real, fake_cartoon, epoch):
     # Convert pixel values from [-1, 1] to [0, 1] for imshow
     fake_real = (fake_real + 1) / 2
     fake_cartoon = (fake_cartoon + 1) / 2
+    cartoon = (cartoon + 1) / 2
 
     # Fake Real
-    fig, axs = plt.subplots(nrows=8, ncols=8, figsize=(10, 10))
+    fig, axs = plt.subplots(nrows=8, ncols=2, figsize=(64, 64))
     axs = axs.ravel()
 
-    for idx, image in enumerate(fake_real):
-        image_np = image.permute(1, 2, 0).detach().cpu().numpy()
+    add = 0
+    for idx in range(8):
+        image_np = fake_real[idx].permute(1, 2, 0).detach().cpu().numpy()
+        real_np = cartoon[idx].permute(1, 2, 0).detach().cpu().numpy()
 
-        axs[idx].imshow(image_np)
-        axs[idx].axis('off')
+        axs[idx + add].imshow(real_np)
+        add += 1
+        axs[idx + add].imshow(image_np)
+
+    # for idx, image in enumerate(fake_real):
+    #     image_np = image.permute(1, 2, 0).detach().cpu().numpy()
+    #
+    #     axs[idx].imshow(image_np)
+    #     axs[idx].axis('off')
 
     # Save the grid as a PNG file
     grid_filename = os.path.join("Created", f"fake_real_{epoch}.png")
@@ -33,7 +43,7 @@ def SavePNG(fake_real, fake_cartoon, epoch):
 
     for idx, image in enumerate(fake_cartoon):
         image_np = image.permute(1, 2, 0).detach().cpu().numpy()
-
+        real_np = cartoon[idx].permute(1, 2, 0).detach().cpu().numpy()
         axs[idx].imshow(image_np)
         axs[idx].axis('off')
 
